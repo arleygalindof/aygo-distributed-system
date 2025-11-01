@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación Distribuida - Registro de Usuarios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+        }
+        h1 { text-align: center; }
+        input, button {
+            padding: 8px;
+            margin: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registro Distribuido de Usuarios</h1>
+
+    <div>
+        <input id="nombre" placeholder="Nombre de usuario">
+        <button onclick="registrar()">Registrar</button>
+    </div>
+
+    <table id="tabla">
+        <thead>
+            <tr><th>Usuario</th><th>Fecha / Hora</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        async function registrar() {
+            const nombre = document.getElementById('nombre').value.trim();
+            if (!nombre) return alert("Ingrese un nombre");
+
+            const timestamp = new Date().toLocaleString();
+            await fetch(`/api/map/add?key=${nombre}&value=${timestamp}`);
+            document.getElementById('nombre').value = '';
+            cargar();
+        }
+
+        async function cargar() {
+            const res = await fetch('/api/map');
+            const data = await res.json();
+            const tbody = document.querySelector('#tabla tbody');
+            tbody.innerHTML = '';
+
+            Object.entries(data).forEach(([usuario, fecha]) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${usuario}</td><td>${fecha}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Recarga automática cada 3 segundos
+        setInterval(cargar, 3000);
+        cargar();
+    </script>
+</body>
+</html>

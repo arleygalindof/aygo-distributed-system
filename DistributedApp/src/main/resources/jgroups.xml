@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="urn:org:jgroups"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups.xsd">
+
+    <!-- Transporte TCP básico -->
+    <TCP bind_addr="0.0.0.0"
+         bind_port="7800"
+         recv_buf_size="20M"
+         send_buf_size="640K"
+         sock_conn_timeout="3000"
+         thread_pool.min_threads="2"
+         thread_pool.max_threads="8"
+         thread_pool.keep_alive_time="5000"/>
+
+    <!-- Descubrimiento estático de los nodos -->
+    <TCPPING
+        initial_hosts="aygo-backend1[7800],aygo-backend2[7800],aygo-backend3[7800]"
+        port_range="10"
+        break_on_coord_rsp="true"/>
+
+    <!-- Detección de merges -->
+    <MERGE3 min_interval="10000" max_interval="30000"/>
+
+    <!-- Detección de fallos (actualizado para JGroups 5.x) -->
+    <FD_SOCK2/>
+    <FD_ALL3 timeout="10000" interval="3000"/>
+    <VERIFY_SUSPECT2 timeout="5000"/>
+    <BARRIER/>
+
+    <!-- Comunicación confiable -->
+    <pbcast.NAKACK2 discard_delivered_msgs="true"/>
+    <UNICAST3/>
+    <pbcast.STABLE/>
+    <pbcast.GMS print_local_addr="true"/>
+
+    <!-- Fragmentación y control de flujo -->
+    <UFC/>
+    <MFC/>
+    <FRAG4 frag_size="60000"/>
+    <pbcast.STATE_TRANSFER/>
+</config>
