@@ -6,7 +6,7 @@
 El sistema cuenta con un **balanceador Nginx**, tres **instancias backend Java (Spring Boot)** y una base de datos **MongoDB**.  
 El despliegue completo se realiza mediante **Docker Compose** sobre una instancia **AWS EC2**.
 
----
+```
 
 ## 🏗️ Arquitectura del Proyecto
 
@@ -40,10 +40,10 @@ La arquitectura de Aygo está organizada en los siguientes componentes:
 
 Todos los servicios se comunican dentro de una red interna llamada `aygo-network`.
 
----
+```
 
 ## ⚙️ Estructura del Repositorio
-
+```
 ├── aygo-backend1/
 │ ├── Dockerfile
 │ ├── src/
@@ -67,9 +67,7 @@ Todos los servicios se comunican dentro de una red interna llamada `aygo-network
 │
 ├── docker-compose.yml
 └── README.md
-
-
----
+```
 
 ## 🚀 Despliegue en AWS EC2
 
@@ -100,7 +98,7 @@ Backend 3 → http://ec2-XX-XX-XX-XX.compute-1.amazonaws.com:8083/api/...
 
 Contenido del docker-compose.yml
 
----
+```
 services:
   aygo-mongo:
     image: arleygf/aygo-mongo:3.6.1
@@ -159,31 +157,27 @@ services:
 networks:
   aygo-network:
     driver: bridge
----
+```
 
 🧩 Configuración de Nginx
 
 Archivo: LoadBalancer/nginx.conf
 
----
+```
 events {}
-
 http {
     upstream backend_cluster {
         server aygo-backend1:8080;
         server aygo-backend2:8080;
         server aygo-backend3:8080;
     }
-
     server {
         listen 80;
-
         location / {
             root /usr/share/nginx/html;
             index index.html;
             try_files $uri $uri/ /index.html;
         }
-
         location /api/ {
             proxy_pass http://backend_cluster;
             proxy_http_version 1.1;
@@ -195,7 +189,7 @@ http {
     }
 }
 
----
+```
 
 Imágen de la interfaz
 
